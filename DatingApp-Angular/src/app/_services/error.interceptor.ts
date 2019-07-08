@@ -11,7 +11,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         .pipe(
             catchError(error => {
                 if (error instanceof HttpErrorResponse){
-                    if (error.status == 401){
+                    if (error.status === 401) {
                         return throwError(error.statusText);
                     }
                     const applicationError = error.headers.get('Application-Error');
@@ -19,7 +19,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                         console.error(applicationError);
                         return throwError(applicationError);
                     }
-                    const serverError = error.error.errors;
+                    const serverError = error.error;
                     let modalStateErrors = '';
                     if (serverError && typeof serverError === 'object') {
                         for (const key in serverError) {
