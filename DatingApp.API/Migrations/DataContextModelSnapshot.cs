@@ -14,7 +14,8 @@ namespace DatingApp.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
+                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("DatingApp.API.Models.Like", b =>
                 {
@@ -42,8 +43,6 @@ namespace DatingApp.API.Migrations
 
                     b.Property<DateTime>("MessageSent");
 
-                    b.Property<int?>("RecipeintId");
-
                     b.Property<bool>("RecipientDeleted");
 
                     b.Property<int>("RecipientId");
@@ -54,7 +53,7 @@ namespace DatingApp.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RecipeintId");
+                    b.HasIndex("RecipientId");
 
                     b.HasIndex("SenderId");
 
@@ -148,9 +147,9 @@ namespace DatingApp.API.Migrations
 
             modelBuilder.Entity("DatingApp.API.Models.Message", b =>
                 {
-                    b.HasOne("DatingApp.API.Models.User", "Recipeint")
+                    b.HasOne("DatingApp.API.Models.User", "Recipient")
                         .WithMany("MessagesReceived")
-                        .HasForeignKey("RecipeintId")
+                        .HasForeignKey("RecipientId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("DatingApp.API.Models.User", "Sender")
