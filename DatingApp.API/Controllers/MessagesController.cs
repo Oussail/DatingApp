@@ -96,13 +96,37 @@ namespace DatingApp.API.Controllers
             
             
 
-            if(await _repo.SaveAll()) {
+            if(await _repo.SaveAll())
+            {
                 var messageToReturn = _mapper.Map<MessageToReturnDto>(message);
                 return CreatedAtRoute("GetMessage", new Message{Id = message.Id}, messageToReturn);
             }
                 
             
             throw new Exception("Creating the message failed on save");
+        }
+
+        [HttpPost("{id}")]
+        public async Task<IActionResult> DeleteMessage(int id, int userId)
+        {
+            if(userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+            
+            var messageFormRepo = await _repo.GetMessage(id);
+
+            if(messageFormRepo.SenderId == userId)
+                messageFormRepo.SenderDeleted = true;
+
+            if(messageFormRepo.RecipientId == userId)
+                messageFormRepo.RecipientDeleted = true;
+            
+            if(messageFormRepo.SenderDeleted && messageFormRepo.RecipientDeleted)
+                _repo.Delete(messageFormRepo);
+            
+            if(await _repo.SaveAll())
+                return NoContent();
+
+            throw new Exception("Error deleting the message");
         }
     }
 }
